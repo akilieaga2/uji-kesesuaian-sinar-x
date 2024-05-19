@@ -1,0 +1,959 @@
+    <!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="id" lang="id">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Uji Kesesuaian</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            text-indent: 0;
+        }
+
+        body {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .s1 {
+            color: black;
+            font-family: Calibri, sans-serif;
+            font-style: normal;
+            font-weight: normal;
+            text-decoration: none;
+            font-size: 11pt;
+        }
+
+        .s2 {
+            color: black;
+            font-family: Calibri, sans-serif;
+            font-style: normal;
+            font-weight: normal;
+            text-decoration: none;
+            font-size: 15pt;
+        }
+
+        table,
+        tbody {
+            vertical-align: top;
+            overflow: visible;
+        }
+
+        p.editable {
+            cursor: pointer;
+        }
+
+        @media print {
+            #print-button {
+                display: none;
+            }
+        }
+    </style>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+
+<body>
+    <br>
+
+    <div style="display: flex; align-items: center;">
+        <h5 class="s2" style="margin-left: 6.025pt; margin-bottom: 10px;"><strong id="tanggalUji"></strong></h5>
+        <button id="print-button" onclick="printPage()" style="margin-left:10px; padding:5px">Print</button>
+    </div>
+
+    <br>
+
+    <table style="border-collapse:collapse;margin-left:6.025pt" cellspacing="0">
+        <tr style="height:14pt">
+            <td style="width:149pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                colspan="2" rowspan="2">
+                <p style="padding-top: 1pt;text-indent: 0pt;text-align: left;"><br /></p>
+                <p class="s1" style="padding-left: 6pt;text-indent: 0pt;line-height: 12pt;text-align: left;">Alat Ukur
+                    Lapangan</p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#BDD6EE">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">RaySafe
+                </p>
+            </td>
+            <td style="width:50pt;border-left-style:solid;border-left-width:1pt">
+                <p style="text-indent: 0pt;text-align: left;"><br /></p>
+            </td>
+            <td style="width:63pt">
+                <p style="text-indent: 0pt;text-align: left;"><br /></p>
+            </td>
+            <td style="width:51pt">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">SID (cm)
+                </p>
+            </td>
+            <td style="width:50pt; border-top-style: solid; border-top-width: 1pt; border-left-style: solid; border-left-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-right-style: solid; border-right-width: 1pt;"
+                bgcolor="#BDD6EE">
+                <p style="text-indent: 0pt;text-align: left;">
+                <p class="s1" id="distance" style="text-indent: 0pt;line-height: 12pt;text-align: center;">-</p>
+            </td>
+            <td style="width:50pt">
+                <p style="text-indent: 0pt;text-align: left;"><br /></p>
+            </td>
+        </tr>
+        <tr style="height:14pt">
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#BDD6EE">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">25cm x
+                    25cm</p>
+            </td>
+            <td
+                style="width:50pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt">
+                <p style="text-indent: 0pt;text-align: left;"><br /></p>
+            </td>
+            <td style="width:63pt;border-bottom-style:solid;border-bottom-width:1pt">
+                <p style="text-indent: 0pt;text-align: left;"><br /></p>
+            </td>
+            <td style="width:51pt;border-bottom-style:solid;border-bottom-width:1pt">
+                <p style="text-indent: 0pt;text-align: left;"><br /></p>
+            </td>
+            <td style="width:50pt;border-bottom-style:solid;border-bottom-width:1pt">
+                <p style="text-indent: 0pt;text-align: left;"><br /></p>
+            </td>
+            <td style="width:50pt;border-bottom-style:solid;border-bottom-width:1pt">
+                <p style="text-indent: 0pt;text-align: left;"><br /></p>
+            </td>
+        </tr>
+        <tr style="height:28pt">
+            <td style="width:99pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                rowspan="5">
+                <p style="padding-left: 17pt;text-indent: 0pt;text-align: left;"><span>
+                        <table border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td><img width="75" style="padding-left:20pt;padding-top:2pt"
+                                        src="data:image/jpg;base64,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" />
+                                </td>
+                            </tr>
+                        </table>
+                    </span></p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="padding-top: 7pt;padding-left: 1pt;text-indent: 0pt;text-align: center;">Titik Ukur
+                </p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;text-align: center;">Pengukuran</p>
+                <p class="s1"
+                    style="padding-top: 1pt;padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">
+                    (Lux)</p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="padding-left: 10pt;text-indent: 0pt;text-align: left;">Rerata</p>
+                <p class="s1"
+                    style="padding-top: 1pt;padding-left: 14pt;text-indent: 0pt;line-height: 12pt;text-align: left;">
+                    (Lux)</p>
+            </td>
+            <td style="width:63pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;text-align: center;">Cahaya Latar</p>
+                <p class="s1"
+                    style="padding-top: 1pt;padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">
+                    (Lux)</p>
+            </td>
+            <td style="width:51pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="padding-top: 7pt;padding-left: 1pt;text-indent: 0pt;text-align: center;">FK</p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;text-align: center;">Hasil Uji</p>
+                <p class="s1"
+                    style="padding-top: 1pt;padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">
+                    (Lux)</p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;text-align: center;">Nilai Lolos</p>
+                <p class="s1"
+                    style="padding-top: 1pt;padding-left: 2pt;text-indent: 0pt;line-height: 12pt;text-align: center;">
+                    Uji</p>
+            </td>
+        </tr>
+        <tr style="height:14pt">
+            <td
+                style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">Area 1
+                </p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE699">
+                <p class="s1" id="lux1"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;"></p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                rowspan="4">
+                <p class="s1" id="lux-total"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;padding-top: 30px;">
+                </p>
+            </td>
+            <td style="width:63pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                rowspan="4" bgcolor="#FFE699">
+                <p class="s1" id="lux-latar"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;padding-top: 30px;">
+                </p>
+            </td>
+            <td style="width:51pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                rowspan="4" bgcolor="#FFE699">
+                <p class="s1" id="lux-fk"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;padding-top: 30px;">
+                </p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                rowspan="4">
+                <p class="s1" id="lux-hasil"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;padding-top: 30px;">
+                </p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                rowspan="4" id="lux-warna-lolos">
+                <p style="padding-top: 5pt;text-indent: 0pt;text-align: left;"><br /></p>
+                <p class="s1" style="padding-left: 5pt;text-indent: 0pt;text-align: left;">≥ 100 lux</p>
+                <p class="s1" id="lux-lolos" style="text-indent: 0pt;text-align: center;">-</p>
+            </td>
+        </tr>
+        <tr style="height:14pt">
+            <td
+                style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">Area 2
+                </p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE699">
+                <p class="s1" id="lux2"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;"></p>
+            </td>
+        </tr>
+        <tr style="height:14pt">
+            <td
+                style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">Area 3
+                </p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE699">
+                <p class="s1" id="lux3"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;"></p>
+            </td>
+        </tr>
+        <tr style="height:14pt">
+            <td
+                style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">Area 4
+                </p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE699">
+                <p class="s1" id="lux4"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;"></p>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <table style="border-collapse:collapse;margin-left:6.025pt" cellspacing="0">
+        <tr style="height:14pt">
+            <td style="width:70pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1"
+                    style="padding-top: 7pt;padding-left: 1pt;text-indent: 0pt;text-align: center;padding-bottom: 7pt;">
+                    Sensor MPU
+                </p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1"
+                    style="padding-top: 7pt;padding-left: 1pt;text-indent: 0pt;text-align: center;padding-bottom: 7pt;">
+                    Nilai X
+                </p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1"
+                    style="padding-top: 7pt;padding-left: 1pt;text-indent: 0pt;text-align: center;padding-bottom: 7pt;">
+                    Nilai Y
+                </p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1"
+                    style="padding-top: 7pt;padding-left: 1pt;text-indent: 0pt;text-align: center;padding-bottom: 7pt;">
+                    Nilai Z
+                </p>
+            </td>
+        </tr>
+        <tr style="height:14pt">
+            <td
+                style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">MPU 1
+                </p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE699">
+                <p class="s1" id="mpu1x"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;"></p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE699">
+                <p class="s1" id="mpu1y"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;"></p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE699">
+                <p class="s1" id="mpu1z"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;"></p>
+            </td>
+        </tr>
+        <tr style="height:14pt">
+            <td
+                style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">MPU 2
+                </p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE699">
+                <p class="s1" id="mpu2x"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;"></p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE699">
+                <p class="s1" id="mpu2y"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;"></p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE699">
+                <p class="s1" id="mpu2z"
+                    style="padding-left: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;"></p>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <h5 class="s1" style="margin-left:6.025pt;margin-bottom:10px;"><strong>Selisih Lapangan Kolimasi dengan Berkas
+            Sinar-X</strong></h5>
+
+    <table style="border-collapse:collapse;margin-left:6.025pt" cellspacing="0" id="editabletable">
+        <tr style="height:15pt">
+            <td style="width:46pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                rowspan="2">
+                <p class="s1" style="padding-top: 1pt;padding-left: 6pt;text-indent: 0pt;text-align: left;">kVp-set</p>
+                <p class="s1"
+                    style="padding-top: 2pt;padding-left: 3pt;text-indent: 0pt;line-height: 12pt;text-align: left;">Lap.
+                    (cm)</p>
+            </td>
+            <td style="width:60pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#BDD6EE">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">60</p>
+            </td>
+            <td style="width:130pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt"
+                rowspan="2">
+                <p class="s1" style="padding-top: 1pt;padding-left: 74pt;text-indent: 0pt;text-align: left;">mAs-set</p>
+            </td>
+            <td style="width:60pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#BDD6EE">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">60</p>
+            </td>
+            <td style="width:84pt;border-bottom-style:solid;border-bottom-width:1pt" rowspan="2">
+                <p style="text-indent: 0pt;text-align: left;"><br /></p>
+            </td>
+            <td style="width:50pt;border-bottom-style:solid;border-bottom-width:1pt" rowspan="2">
+                <p class="s1" style="padding-top: 1pt;padding-left: 6pt;text-indent: 0pt;text-align: left;">SID (cm)</p>
+            </td>
+            <td style="width:60pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#BDD6EE">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">60</p>
+            </td>
+        </tr>
+        <tr style="height:15pt">
+            <td style="width:60pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#BDD6EE">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">24 x 18 cm</p>
+            </td>
+        </tr>
+        <tr style="height:30pt">
+            <td style="width:106pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                colspan="2" bgcolor="#9BC1E4">
+                <p class="s1" style="padding-top: 7pt;padding-left: 28pt;text-indent: 0pt;text-align: left;">Kesesuaian
+                </p>
+            </td>
+            <td style="width:56pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="padding-top: 7pt;text-indent: 0pt;text-align: center;">Titik ukur</p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="padding-top: 1pt;padding-left: 10pt;text-indent: 6pt;text-align: left;">Tepi lap.
+                    cahaya (cm)</p>
+            </td>
+            <td style="width:66pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1"
+                    style="padding-top: 1pt;padding-left: 15pt;padding-right: 7pt;text-indent: 6pt;text-align: left;">
+                    Tepi lap. sinar-X (cm)</p>
+            </td>
+            <td style="width:84pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1"
+                    style="padding-top: 2pt;padding-left: 25pt;padding-right: 10pt;text-indent: -10pt;text-align: left;">
+                    ∆<span class="s1">1| + |</span>∆<span class="s1">2| (% SID)</span></p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1"
+                    style="padding-top: 9pt;padding-left: 20pt;padding-right: 1pt;text-indent: -3pt;text-align: left;">
+                    ∆<span class="s1">X + </span>∆<span class="s1">Y (% SID)</span></p>
+            </td>
+            <td style="width:105pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="padding-top: 7pt;padding-left: 24pt;text-indent: 0pt;text-align: left;">Nilai lolos
+                    uji</p>
+            </td>
+        </tr>
+        <tr style="height:15pt">
+            <td style="width:106pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                colspan="2" rowspan="4">
+                <p style="padding-left: 29pt;text-indent: 0pt;text-align: left;"><span>
+                        <table border="0" cellspacing="0" cellpadding="0" style="margin-left: 40px">
+                            <tr>
+                                <td><img width="61" style="padding-top:1pt"
+                                        src="data:image/jpg;base64,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" />
+                                </td>
+                            </tr>
+                        </table>
+                    </span></p>
+            </td>
+            <td
+                style="width:56pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt">
+                <p class="s1" style="text-indent: 0pt;text-align: center;">X1</p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE498">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">9</p>
+            </td>
+            <td style="width:66pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE498">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">9</p>
+            </td>
+            <td style="width:84pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                rowspan="2">
+                <p class="s1 editable" style="padding-top: 7pt;text-indent: 0pt;text-align: center;">9</p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                rowspan="4">
+                <p style="padding-top: 10pt;text-indent: 0pt;text-align: left;"><br /></p>
+                <p class="s1 editable" style="text-indent: 0pt;text-align: center;">9</p>
+            </td>
+            <td style="width:105pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                rowspan="4">
+                <p style="padding-top: 4pt;text-indent: 0pt;text-align: left;"><br /></p>
+                <p class="s1" style="padding-left: 7pt;text-indent: 0pt;text-align: left;">∆<span class="s1">X dan
+                    </span>∆<span class="s1">Y </span>≤<span class="s1">2% SID,</span></p>
+                <p class="s1" style="padding-top: 1pt;padding-left: 8pt;text-indent: 0pt;text-align: left;">|<span
+                        class="s1">∆</span>X|+|<span class="s1">∆</span>Y| <span class="s1">≤</span>3% SID</p>
+            </td>
+        </tr>
+        <tr style="height:15pt">
+            <td
+                style="width:56pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt">
+                <p class="s1" style="text-indent: 0pt;text-align: center;">X2</p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE498">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">9</p>
+            </td>
+            <td style="width:66pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE498">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">9</p>
+            </td>
+        </tr>
+        <tr style="height:15pt">
+            <td
+                style="width:56pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt">
+                <p class="s1" style="text-indent: 0pt;text-align: center;">Y1</p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE498">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">9</p>
+            </td>
+            <td style="width:66pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE498">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">9</p>
+            </td>
+            <td style="width:84pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                rowspan="2">
+                <p class="s1 editable" style="padding-top: 7pt;text-indent: 0pt;text-align: center;">9</p>
+            </td>
+        </tr>
+        <tr style="height:15pt">
+            <td
+                style="width:56pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt">
+                <p class="s1" style="text-indent: 0pt;text-align: center;">Y2</p>
+            </td>
+            <td style="width:74pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE498">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">9</p>
+            </td>
+            <td style="width:66pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE498">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">9</p>
+            </td>
+        </tr>
+        <tr style="height:15pt">
+            <td style="width:386pt;border-top-style:solid;border-top-width:1pt;border-right-style:solid;border-right-width:1pt"
+                colspan="5">
+                <p class="s1"
+                    style="padding-top: 1pt;padding-right: 8pt;text-indent: 0pt;line-height: 12pt;text-align: right;">
+                    Kolimasi Lolos?</p>
+            </td>
+            <td style="width:50pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#32cd32">
+                <p class="s1 editable"
+                    style="padding-top: 1pt;padding-left: 13pt;text-indent: 0pt;line-height: 12pt;text-align: left;">
+                    Lolos</p>
+            </td>
+            <td
+                style="width:105pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt">
+                <p style="text-indent: 0pt;text-align: left;"><br /></p>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <h5 class="s1" style="margin-left:6.025pt;margin-bottom:10px;"><strong>Ketegaklurusan Berkas Sinar-X</strong></h5>
+
+    <table style="border-collapse:collapse;margin-left:6.025pt" cellspacing="0">
+        <tr style="height:15pt">
+            <td style="width:152pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p style="text-indent: 0pt;text-align: left;"><br /></p>
+            </td>
+            <td style="width:189pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="text-indent: 0pt;text-align: center;">Hasil ukur (*)</p>
+            </td>
+            <td style="width:117pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="padding-left: 1pt;text-indent: 0pt;text-align: center;">Nilai lolos uji</p>
+            </td>
+        </tr>
+        <tr style="height:15pt">
+            <td style="width:152pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#9BC1E4">
+                <p class="s1" style="padding-left: 42pt;text-indent: 0pt;line-height: 6pt;text-align: left;">
+                    Ketegaklurusan</p>
+            </td>
+            <td style="width:189pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#FFE498">
+                <p class="s1 editable" style="padding-top: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">1.5</p>
+            </td>
+            <td
+                style="width:117pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt">
+                <p class="s1"
+                    style="padding-top: 1pt;padding-right: 1pt;text-indent: 0pt;line-height: 12pt;text-align: center;">
+                    3°</p>
+            </td>
+        </tr>
+        <tr style="height:15pt">
+            <td style="width:292pt;border-top-style:solid;border-top-width:1pt;border-right-style:solid;border-right-width:1pt"
+                colspan="2">
+                <p class="s1"
+                    style="padding-top: 1pt;padding-left: 230pt;text-indent: 0pt;line-height: 12pt;text-align: left;">
+                    Ketegaklurusan Lolos?</p>
+            </td>
+            <td style="width:49pt;border-top-style:solid;border-top-width:1pt;border-left-style:solid;border-left-width:1pt;border-bottom-style:solid;border-bottom-width:1pt;border-right-style:solid;border-right-width:1pt"
+                bgcolor="#32cd32">
+                <p class="s1 editable"
+                    style="padding-top: 1pt;padding-left: 13pt;text-indent: 0pt;line-height: 12pt;text-align: left;">
+                    Lolos</p>
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        // Penting, jangan dirubah
+        var max_value = [];
+        max_value['lux1'] = 0;
+        max_value['lux2'] = 0;
+        max_value['lux3'] = 0;
+        max_value['lux4'] = 0;
+        var locking = false; // Cek apakah saat ini locking atau tidak
+        var locking_timer = 0; // Menghitung waktu untuk jeda locking
+
+        // Bisa dirubah sesuai selera
+        var jenis_locking = "semua"; // "semua" berarti lock hanya saat semua sensor melebihi batas atas, "satu" berarti cukup satu sensor saja
+        var batas_atas_lux = 100; // Perkiraan hasil sensor lux saat diberi flash
+        var jeda_locking_data = 5; // Jeda setelah nilai sensor lux melebihi batas, satuan detik
+
+        // Variabel global
+        var K_x1,K_y1,K_z1,K_x2,K_y2,K_z2;
+        var Xt,Xt2,Xt3,Xt4,Xt5,Xt6,Xt7,Xt8,Xt_update,Xt_update2,Xt_update3,Xt_update4,Xt_update5,Xt_update6,Xt_update7,Xt_update8,Xt_prev,Xt_prev2,Xt_prev3,Xt_prev4,Xt_prev5,Xt_prev6,Xt_prev7,Xt_prev8;
+        var Pt,Pt2,Pt3,Pt4,Pt5,Pt6,Pt7,Pt8,Pt_update,Pt_update2,Pt_update3,Pt_update4,Pt_update5,Pt_update6,Pt_update7,Pt_update8,Pt_prev,Pt_prev2,Pt_prev3,Pt_prev4,Pt_prev5,Pt_prev6,Pt_prev7,Pt_prev8;
+        var Kt,Kt2,Kt3,Kt4,Kt5,Kt6,Kt7,Kt8,R,Q;
+        var agax1, agax2, agax3, agax4;
+        var aga1, aga2, aga3, aga4;
+        var oldvalue1, oldvalue2, oldvalue3, oldvalue4;
+        const alpha = 0.7;
+
+        R = 10; 
+        Q = 0.1;
+        
+        Pt_prev = 1;
+        Pt_prev2 = 1;
+        Pt_prev3 = 1;
+        Pt_prev4 = 1;
+        Pt_prev5 = 1;
+        Pt_prev6 = 1;
+        Pt_prev7 = 1;
+        Pt_prev8 = 1;
+        
+        Xt_prev = 1;
+        Xt_prev2 = 1;
+        Xt_prev3 = 1;
+        Xt_prev4 = 1;
+        Xt_prev5 = 1;
+        Xt_prev6 = 1;
+        Xt_prev7 = 1;
+        Xt_prev8 = 1;
+
+        oldvalue1 = 1;
+        oldvalue2 = 1;
+        oldvalue3 = 1;
+        oldvalue4 = 1;
+
+        const topic = "luxmpuhc/esp32";
+        const clientId = "mqttjs_" + Math.random().toString(16).substr(2, 8);
+        const host = "wss://broker.emqx.io:8084/mqtt";
+        const options = {
+            keepalive: 60,
+            clientId: clientId,
+            protocolId: "MQTT",
+            protocolVersion: 4,
+            clean: true,
+            reconnectPeriod: 1000,
+            connectTimeout: 30 * 1000,
+            will: {
+                topic: "WillMsg",
+                payload: "Connection Closed abnormally..!",
+                qos: 0,
+                retain: false,
+            },
+        };
+
+        console.log("Connecting mqtt client");
+        const client = mqtt.connect(host, options);
+        client.on("error", (err) => {
+            console.log("Connection error: ", err);
+            client.end();
+        });
+        client.on("reconnect", () => {
+            console.log("Reconnecting...");
+        });
+        client.on("connect", function () {
+            console.log("Connected to MQTT broker, with topic = " + topic);
+            client.subscribe(topic, { qos: 0 });
+        });
+
+        client.on("message", (topic, message, packet) => {
+            console.log(
+                `Received Message: ${message.toString()} On topic: ${topic}`
+            );
+
+            if (locking == false || locking_timer != jeda_locking_data) {
+                var keyValuePairs = message.toString().split(',');
+                var lux1, lux2, lux3, lux4;
+                // Iterate over each key-value pair
+                keyValuePairs.forEach(function (pair) {
+                    // Split the pair by '=' to separate key and value
+                    var keyValue = pair.split('=');
+
+                    // Get the key and value
+                    var key = keyValue[0];
+                    var value = parseFloat(keyValue[1]);
+
+                    // HC
+                    if (key == "HC") {
+                        hc = value;
+                        document.getElementById("distance").innerHTML = value.toFixed(2);
+                    }
+
+                    // MPU 1
+                    if (key == "M1x") {
+                        m1x = value
+                        outacelx1 = m1x;
+
+                        // Xt_update = Xt_prev;
+                        // Pt_update = Pt_prev + Q;
+                        // Kt = Pt_update/(Pt_update + R);
+                        // Xt = Xt_update + (Kt*(outacelx1-Xt_update));
+                        // Pt = (1-Kt)*Pt_update;
+                        // Xt_prev = Xt;
+                        // Pt_prev = Pt;
+
+                        // m1x = Xt;
+                        document.getElementById("mpu1x").innerHTML = m1x.toFixed(2);
+                    }
+
+                    if (key == "M1y") {
+                        m1y = value
+                        outacely1 = m1y;
+
+                        // Xt_update2 = Xt_prev2;
+                        // Pt_update2 = Pt_prev2 + Q;
+                        // Kt2 = Pt_update2/(Pt_update2 + R);
+                        // Xt2 = Xt_update2 + (Kt2*(outacely1-Xt_update2));
+                        // Pt2 = (1-Kt2)*Pt_update2;
+                        // Xt_prev2  = Xt2;
+                        // Pt_prev2  = Pt2;
+                        
+                        // m1y = Xt2;
+                        document.getElementById("mpu1y").innerHTML = m1y.toFixed(2);
+                    }
+
+                    if (key == "M1z") {
+                        m1z = value
+                        outacelz1 = m1z;
+
+                        // Xt_update3 = Xt_prev3;
+                        // Pt_update3 = Pt_prev3 + Q;
+                        // Kt3 = Pt_update3/(Pt_update3 + R);
+                        // Xt3 = Xt_update3 + (Kt3*(outacelz1-Xt_update3));
+                        // Pt3 = (1-Kt3)*Pt_update3;
+                        // Xt_prev3  = Xt3;
+                        // Pt_prev3  = Pt3;
+
+                        // m1z = Xt3;
+                        document.getElementById("mpu1z").innerHTML = m1z.toFixed(2);
+                    }
+
+                    // MPU 2
+                    if (key == "M2x") {
+                        m2x = value
+                        outacelx = m2x;
+                        
+                        // Xt_update4 = Xt_prev4;
+                        // Pt_update4 = Pt_prev4 + Q;
+                        // Kt4 = Pt_update4/(Pt_update4 + R);
+                        // Xt4 = Xt_update4 + (Kt4*(outacelx-Xt_update4));
+                        // Pt4 = (1-Kt4)*Pt_update4;
+                        // Xt_prev4 = Xt4;
+                        // Pt_prev4 = Pt4;
+                        
+                        // m2x = Xt4;
+                        document.getElementById("mpu2x").innerHTML = m2x.toFixed(2);
+                    }
+
+                    if (key == "M2y") {
+                        m2y = value
+                        outacely = m2y;
+
+                        // Xt_update5 = Xt_prev5;
+                        // Pt_update5 = Pt_prev5 + Q;
+                        // Kt5 = Pt_update5/(Pt_update5 + R);
+                        // Xt5 = Xt_update5 + (Kt5*(outacely-Xt_update5));
+                        // Pt5 = (1-Kt5)*Pt_update5;
+                        // Xt_prev5  = Xt5;
+                        // Pt_prev5  = Pt5;
+
+                        // m2y = Xt5;
+                        document.getElementById("mpu2y").innerHTML = m2y.toFixed(2);
+                    }
+
+                    if (key == "M2z") {
+                        m2z = value
+                        outacelz = m2z;
+
+                        // Xt_update6 = Xt_prev6;
+                        // Pt_update6 = Pt_prev6 + Q;
+                        // Kt6 = Pt_update6/(Pt_update6 + R);
+                        // Xt6 = Xt_update6 + (Kt6*(outacelz-Xt_update6));
+                        // Pt6 = (1-Kt6)*Pt_update6;
+                        // Xt_prev6  = Xt6;
+                        // Pt_prev6  = Pt6;
+
+                        // m2z = Xt6;
+                        document.getElementById("mpu2z").innerHTML = m2z.toFixed(2);
+                    }
+
+                    // Lux
+                    if (key == "LX1") {
+                        lux1 = value
+                        agax1 = alpha * lux1 + (1 - alpha) * oldvalue1;
+                        oldvalue1 = agax1;
+                        aga1 = (0.0002 * Math.pow(agax1, 2)) + (0.3731 * agax1);
+                        lux1 = aga1;
+                    }
+
+                    if (key == "LX2") {
+                        lux2 = value
+                        agax2 = alpha * lux2 + (1 - alpha) * oldvalue2;
+                        oldvalue2 = agax2;
+                        aga2 = (0.0002 * Math.pow(agax2, 2)) + (0.3731 * agax2);
+                        lux2 = aga2;
+                    }
+
+                    if (key == "LX3") {
+                        lux3 = value
+                        agax3 = alpha * lux3 + (1 - alpha) * oldvalue3;
+                        oldvalue3 = agax3;
+                        aga3 = (0.0002 * Math.pow(agax3, 2)) + (0.3731 * agax3);
+                        lux3 = aga3;
+                    }
+
+                    if (key == "LX4") {
+                        lux4 = value
+                        agax4 = alpha * lux4 + (1 - alpha) * oldvalue4;
+                        oldvalue4 = agax4;
+                        aga4 = (0.0002 * Math.pow(agax4, 2)) + (0.3731 * agax1);
+                        lux4 = aga4;
+                    }
+                });
+
+                // Logika locking sensor lux dan max value lux
+                if (jenis_locking == "semua") {
+                    if (lux1 >= batas_atas_lux && lux2 >= batas_atas_lux && lux3 >= batas_atas_lux && lux4 >= batas_atas_lux) {
+                        locking = true;
+
+                        if (lux1 > max_value['lux1'])
+                            max_value['lux1'] = lux1;
+                        if (lux2 > max_value['lux2'])
+                            max_value['lux2'] = lux2;
+                        if (lux3 > max_value['lux3'])
+                            max_value['lux3'] = lux3;
+                        if (lux4 > max_value['lux4'])
+                            max_value['lux4'] = lux4;
+                    }
+                } else {
+                    if (lux1 >= batas_atas_lux || lux2 >= batas_atas_lux || lux3 >= batas_atas_lux || lux4 >= batas_atas_lux) {
+                        locking = true;
+
+                        if (lux1 > max_value['lux1'])
+                            max_value['lux1'] = lux1;
+                        if (lux2 > max_value['lux2'])
+                            max_value['lux2'] = lux2;
+                        if (lux3 > max_value['lux3'])
+                            max_value['lux3'] = lux3;
+                        if (lux4 > max_value['lux4'])
+                            max_value['lux4'] = lux4;
+                    }
+                }
+
+                if (locking == true) {
+                    lux1 = max_value["lux1"];
+                    lux2 = max_value["lux2"];
+                    lux3 = max_value["lux3"];
+                    lux4 = max_value["lux4"];
+                    document.getElementById("lux-lolos").innerHTML = "LOCKING!";
+                }
+
+                document.getElementById("lux1").innerHTML = lux1.toFixed(2);
+                document.getElementById("lux2").innerHTML = lux2.toFixed(2);
+                document.getElementById("lux3").innerHTML = lux3.toFixed(2);
+                document.getElementById("lux4").innerHTML = lux4.toFixed(2);
+
+                lux_total = (lux1 + lux2 + lux3 + lux4) / 4
+                lux_fk = 1
+
+                if (locking == false)
+                    lux_latar = lux_total
+
+                lux_hasil = lux_total - lux_latar
+
+                document.getElementById("lux-total").innerHTML = lux_total.toFixed(2);
+                document.getElementById("lux-latar").innerHTML = lux_latar.toFixed(2);
+                document.getElementById("lux-fk").innerHTML = lux_fk.toFixed(2);
+                document.getElementById("lux-hasil").innerHTML = lux_hasil.toFixed(2);
+
+                if (locking == true && locking_timer == 0) {
+                    var timerInterval = setInterval(function () {
+                        locking_timer++;
+
+                        if (locking_timer >= jeda_locking_data) {
+                            if (lux_hasil >= 100) {
+                                lux_lolos = "Good"
+                                document.getElementById("lux-warna-lolos").style.backgroundColor = "#32cd32"
+                            } else {
+                                lux_lolos = "Bad"
+                                document.getElementById("lux-warna-lolos").style.backgroundColor = "#ff4500"
+                            }
+                            document.getElementById("lux-lolos").innerHTML = lux_lolos;
+                            console.log("LOCKING DATA!");
+                            clearInterval(timerInterval);
+                        }
+                    }, 1000);
+                }
+            }
+        });
+
+        // Function to get the Indonesian month name
+        function getIndonesianMonth(month) {
+            const monthNames = [
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ];
+            return monthNames[month];
+        }
+
+        // Get the current date
+        const currentDate = new Date();
+
+        // Extract day, month, and year
+        const day = currentDate.getDate();
+        const month = getIndonesianMonth(currentDate.getMonth());
+        const year = currentDate.getFullYear();
+
+        // Construct the formatted date string
+        const formattedDate = `Tanggal Uji: ${day} ${month} ${year}`;
+
+        // Update the HTML element with the formatted date
+        document.getElementById("tanggalUji").textContent = formattedDate;
+
+        // Get all editable cells
+        const editableCells = document.querySelectorAll('p.editable');
+
+        // Add click event listener to each editable cell
+        editableCells.forEach(cell => {
+            cell.addEventListener('click', function () {
+                // Get current content of the cell
+                const content = this.textContent;
+
+                if (content.includes("Lolos")) {
+                    cell.textContent = "Gagal";
+                    cell.parentNode.style.backgroundColor = "#ff4500";
+                } else if (content.includes("Gagal")) {
+                    cell.textContent = "Lolos";
+                    cell.parentNode.style.backgroundColor = "#32cd32";
+                } else {
+                    // Show prompt dialog to edit the content
+                    const newValue = prompt('Enter new value:', content);
+    
+                    // Update cell content if a new value is provided
+                    if (newValue !== null && newValue !== '') {
+                        cell.textContent = newValue;
+                    }
+                }
+            });
+        });
+
+        function printPage() {
+            // Specify print options
+            var printOptions = {
+                landscape: true // Set orientation to landscape
+            };
+
+            // Open print dialog with specified options
+            window.print(printOptions);
+        }
+    </script>
+</body>
+
+</html>
