@@ -60,6 +60,7 @@
     <div style="display: flex; align-items: center;">
         <h5 class="s2" style="margin-left: 6.025pt; margin-bottom: 10px;"><strong id="tanggalUji"></strong></h5>
         <button id="print-button" onclick="printPage()" style="margin-left:10px; padding:5px">Print</button>
+        <button id="lock-latar-button" onclick="lockLatar()" style="margin-left:10px; padding:5px">Lock Latar OFF</button>
     </div>
 
     <br>
@@ -587,12 +588,13 @@
         max_value['lux3'] = 0;
         max_value['lux4'] = 0;
         var locking = false; // Cek apakah saat ini locking atau tidak
+        var locking_latar = false; // Cek apakah saat ini locking latar atau tidak
         var locking_timer = 0; // Menghitung waktu untuk jeda locking
 
         // Bisa dirubah sesuai selera
         var jenis_locking = "semua"; // "semua" berarti lock hanya saat semua sensor melebihi batas atas, "satu" berarti cukup satu sensor saja
-        var batas_atas_lux = 99; // Perkiraan hasil sensor lux saat diberi flash
-        var jeda_locking_data = 5; // Jeda setelah nilai sensor lux melebihi batas, satuan detik
+        var batas_atas_lux = 100; // Perkiraan hasil sensor lux saat diberi flash
+        var jeda_locking_data = 10; // Jeda setelah nilai sensor lux melebihi batas, satuan detik
 
         // Variabel global
         var K_x1,K_y1,K_z1,K_x2,K_y2,K_z2;
@@ -688,7 +690,7 @@
 
                     // MPU 1
                     if (key == "M1x") {
-                        m1x = value
+                        m1x = value - 1;
                         outacelx1 = m1x;
 
                         // Xt_update = Xt_prev;
@@ -789,7 +791,7 @@
                         lux1 = value
                         agax1 = alpha * lux1 + (1 - alpha) * oldvalue1;
                         oldvalue1 = agax1;
-                        aga1 = (0.0002 * Math.pow(agax1, 2)) + (0.3731 * agax1);
+                        aga1 = (0.0002 * Math.pow(agax1, 2)) + (0.5731 * agax1);
                         lux1 = aga1;
                     }
 
@@ -797,7 +799,7 @@
                         lux2 = value
                         agax2 = alpha * lux2 + (1 - alpha) * oldvalue2;
                         oldvalue2 = agax2;
-                        aga2 = (0.0002 * Math.pow(agax2, 2)) + (0.3731 * agax2);
+                        aga2 = (0.0002 * Math.pow(agax2, 2)) + (0.5731 * agax2);
                         lux2 = aga2;
                     }
 
@@ -805,7 +807,7 @@
                         lux3 = value
                         agax3 = alpha * lux3 + (1 - alpha) * oldvalue3;
                         oldvalue3 = agax3;
-                        aga3 = (0.0002 * Math.pow(agax3, 2)) + (0.3731 * agax3);
+                        aga3 = (0.0002 * Math.pow(agax3, 2)) + (0.5731 * agax3);
                         lux3 = aga3;
                     }
 
@@ -813,7 +815,7 @@
                         lux4 = value
                         agax4 = alpha * lux4 + (1 - alpha) * oldvalue4;
                         oldvalue4 = agax4;
-                        aga4 = (0.0002 * Math.pow(agax4, 2)) + (0.3731 * agax1);
+                        aga4 = (0.0002 * Math.pow(agax4, 2)) + (0.5731 * agax1);
                         lux4 = aga4;
                     }
                 });
@@ -863,7 +865,7 @@
                 lux_total = (lux1 + lux2 + lux3 + lux4) / 4
                 lux_fk = 1
 
-                if (locking == false)
+                if (locking_latar == false)
                     lux_latar = lux_total
 
                 lux_hasil = lux_total - lux_latar
@@ -952,6 +954,19 @@
 
             // Open print dialog with specified options
             window.print(printOptions);
+        }
+
+        function lockLatar() {
+            locking_latar = !locking_latar;
+
+            // Get the button element
+            var button = document.getElementById("lock-latar-button");
+            
+            // Change the text of the button
+            if (locking_latar == true)
+                button.innerHTML = "Lock Latar ON";
+            if (locking_latar == false)
+                button.innerHTML = "Lock Latar OFF";
         }
     </script>
 </body>
